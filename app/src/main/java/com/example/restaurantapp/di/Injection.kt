@@ -1,7 +1,6 @@
 package com.example.restaurantapp.di
 
 import android.content.Context
-import com.example.restaurantapp.ViewModelFactory
 import com.example.restaurantapp.data.RestaurantRepository
 import com.example.restaurantapp.data.local.dataStore.SettingPreferences
 import com.example.restaurantapp.data.local.room.FavoriteRestaurantDatabase
@@ -23,15 +22,3 @@ object Injection {
     }
 }
 
-object Helpers {
-    fun viewModelFactoryHelper(context: Context): ViewModelFactory {
-        return ViewModelFactory(
-            Injection.provideRestaurantRepository(
-                context
-            ),
-            Injection.provideSettingPreferences(
-                context
-            )
-        )
-    }
-}

@@ -6,15 +6,16 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import com.example.restaurantapp.common.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Constants.settings)
 
 class SettingPreferences private constructor(
     private val dataStore: DataStore<Preferences>
 ) {
-    private val themeKey = booleanPreferencesKey("theme_key")
+    private val themeKey = booleanPreferencesKey(Constants.themeKey)
 
     fun getThemeSetting(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
