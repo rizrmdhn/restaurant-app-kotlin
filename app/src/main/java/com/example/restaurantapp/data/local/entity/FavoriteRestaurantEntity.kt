@@ -26,6 +26,6 @@ class FavoriteRestaurantEntity(
     val city: String,
 
     @field:ColumnInfo(name = "rating")
-    val rating: Float
+    val rating: Double,
 ): Parcelable
 
