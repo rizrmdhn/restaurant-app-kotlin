@@ -20,7 +20,7 @@ class FavoriteRestaurantEntity(
     val description: String,
 
     @field:ColumnInfo(name = "pictureId")
-    val pictureId: Int,
+    val pictureId: String,
 
     @field:ColumnInfo(name = "city")
     val city: String,

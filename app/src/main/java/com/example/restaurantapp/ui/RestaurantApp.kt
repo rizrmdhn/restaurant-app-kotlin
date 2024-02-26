@@ -13,10 +13,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.restaurantapp.common.Helpers
 import com.example.restaurantapp.ui.components.TopBar
 import com.example.restaurantapp.ui.navigation.Screen
+import com.example.restaurantapp.ui.screen.favorite.FavoriteScreen
 import com.example.restaurantapp.ui.screen.home.HomeScreen
 import com.example.restaurantapp.ui.theme.RestaurantAppTheme
 
@@ -29,7 +31,12 @@ fun RestaurantApp(
         )
     )
 ) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     val darkMode by viewModel.darkMode.collectAsState(initial = false)
+    val isSearchOpen by viewModel.isSearchOpen.collectAsState(initial = false)
+    val searchQuery by viewModel.searchQuery.collectAsState(initial = "")
 
     viewModel.getDarkMode()
 
@@ -39,12 +46,32 @@ fun RestaurantApp(
         Scaffold(
             topBar = {
                 TopBar(
-                    onGoToSearch = {},
-                    onGoToFavorite = {},
+                    onOpenSearch = {
+                        viewModel.setSearchOpen(true)
+                    },
+                    onGoToHome = {
+                        navController.navigate(Screen.Home.route)
+                    },
+                    onGoToFavorite = {
+                        navController.navigate(Screen.Favorite.route)
+                    },
+                    isInFavoriteScreen = currentRoute == Screen.Favorite.route,
                     isInDarkMode = darkMode,
                     onToggleDarkMode = {
                         viewModel.setDarkMode(!darkMode)
                     },
+                    isSearchOpen = isSearchOpen,
+                    query = searchQuery,
+                    searchPlaceHolder = "Cari restaurant...",
+                    onQueryChange = {
+                        viewModel.onSearch(it)
+                    },
+                    onSearch = {},
+                    active = false,
+                    onActiveChange = {},
+                    onClearQuery = {
+                        viewModel.clearQuery()
+                    }
                 )
             }
         ) { innerPadding ->
@@ -58,6 +85,12 @@ fun RestaurantApp(
                 ) {
                     HomeScreen()
                 }
+                composable(
+                    Screen.Favorite.route
+                ) {
+                    FavoriteScreen()
+                }
+
             }
         }
     }

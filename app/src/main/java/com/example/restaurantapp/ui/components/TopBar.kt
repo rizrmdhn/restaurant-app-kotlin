@@ -3,6 +3,7 @@ package com.example.restaurantapp.ui.components
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,48 +22,84 @@ import com.example.restaurantapp.ui.theme.RestaurantAppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    onGoToSearch: () -> Unit,
+    onOpenSearch: () -> Unit,
+    onGoToHome: () -> Unit,
     onGoToFavorite: () -> Unit,
+    isInFavoriteScreen: Boolean,
     isInDarkMode: Boolean,
     onToggleDarkMode: () -> Unit,
+    isSearchOpen: Boolean,
+    query: String,
+    searchPlaceHolder: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    active: Boolean,
+    onActiveChange: (Boolean) -> Unit,
+    onClearQuery: () -> Unit,
 ) {
     TopAppBar(
         title = {
-            Text(
-                text = "Restaurant App"
-            )
+            if (!isSearchOpen) {
+                Text(
+                    text = "Restaurant App",
+                    color = Color(0xFFEEEEEE),
+                )
+            }
         },
         actions = {
-            IconButton(
-                onClick = onGoToSearch
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                )
-            }
-            IconButton(
-                onClick = onGoToFavorite
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "Favorite",
-                )
-            }
-            IconButton(
-                onClick = onToggleDarkMode
-            ) {
-                Icon(
-                    painter = painterResource(
-                        id = if (isInDarkMode) {
-                            R.drawable.baseline_dark_mode_24
-                        } else {
-                            R.drawable.baseline_sunny_24
-                        }
-                    ),
-                    contentDescription = "Dark Mode",
-                )
-            }
+           if (!isSearchOpen) {
+               IconButton(
+                   onClick = onOpenSearch
+               ) {
+                   Icon(
+                       imageVector = Icons.Default.Search,
+                       contentDescription = "Search",
+                   )
+               }
+               if (isInFavoriteScreen) {
+                   IconButton(
+                       onClick = onGoToHome
+                   ) {
+                       Icon(
+                           imageVector = Icons.Default.Home,
+                           contentDescription = "Home",
+                       )
+                   }
+               } else {
+                   IconButton(
+                       onClick = onGoToFavorite
+                   ) {
+                       Icon(
+                           imageVector = Icons.Default.Favorite,
+                           contentDescription = "Favorite",
+                       )
+                   }
+               }
+               IconButton(
+                   onClick = onToggleDarkMode
+               ) {
+                   Icon(
+                       painter = painterResource(
+                           id = if (isInDarkMode) {
+                               R.drawable.baseline_dark_mode_24
+                           } else {
+                               R.drawable.baseline_sunny_24
+                           }
+                       ),
+                       contentDescription = "Dark Mode",
+                   )
+               }
+           } else {
+               Search(
+                     query = query,
+                     searchPlaceHolder = searchPlaceHolder,
+                     onQueryChange = onQueryChange,
+                     onSearch = onSearch,
+                     active = active,
+                     onActiveChange = onActiveChange,
+                     onClearQuery = onClearQuery,
+               )
+           }
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0xFF393E46),
@@ -78,10 +115,20 @@ fun TopBar(
 fun TopBarPreview() {
     RestaurantAppTheme {
         TopBar(
-            onGoToSearch = {},
+            onOpenSearch = {},
+            onGoToHome = {},
             onGoToFavorite = {},
+            isInFavoriteScreen = false,
             onToggleDarkMode = {},
             isInDarkMode = false,
+            isSearchOpen = true,
+            query = "",
+            searchPlaceHolder = "Cari favorite user...",
+            onQueryChange = {},
+            onSearch = {},
+            active = false,
+            onActiveChange = {},
+            onClearQuery = {},
         )
     }
 }
@@ -91,10 +138,20 @@ fun TopBarPreview() {
 fun TopBarDarkPreview() {
     RestaurantAppTheme {
         TopBar(
-            onGoToSearch = {},
+            onOpenSearch = {},
+            onGoToHome = {},
             onGoToFavorite = {},
+            isInFavoriteScreen = true,
             onToggleDarkMode = {},
             isInDarkMode = true,
+            isSearchOpen = false,
+            query = "",
+            searchPlaceHolder = "Cari favorite user...",
+            onQueryChange = {},
+            onSearch = {},
+            active = false,
+            onActiveChange = {},
+            onClearQuery = {},
         )
     }
 }

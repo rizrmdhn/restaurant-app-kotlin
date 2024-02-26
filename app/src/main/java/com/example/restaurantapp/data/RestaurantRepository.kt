@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.restaurantapp.data.local.entity.FavoriteRestaurantEntity
 import com.example.restaurantapp.data.local.room.FavoriteRestaurantDao
 import com.example.restaurantapp.data.remote.response.Restaurant
 import com.example.restaurantapp.data.remote.response.RestaurantDetailResponse
@@ -75,6 +76,26 @@ class RestaurantRepository(
         })
 
         return flowOf(detailRestaurant)
+    }
+
+    fun getFavoriteRestaurant(): Flow<List<FavoriteRestaurantEntity>> {
+        return favoriteRestaurantDao.getFavoriteRestaurants()
+    }
+
+    fun searchFavoriteRestaurant(query: String): Flow<List<FavoriteRestaurantEntity>> {
+        return favoriteRestaurantDao.searchFavoriteRestaurant(query)
+    }
+
+    suspend fun insertFavoriteRestaurant(favoriteRestaurantEntity: FavoriteRestaurantEntity) {
+        favoriteRestaurantDao.insertFavoriteRestaurant(favoriteRestaurantEntity)
+    }
+
+    suspend fun deleteFavoriteRestaurant(id: String) {
+        favoriteRestaurantDao.deleteFavoriteRestaurant(id)
+    }
+
+    fun isFavoriteRestaurant(id: String): Flow<Boolean> {
+        return favoriteRestaurantDao.isFavoriteRestaurant(id)
     }
 
 
