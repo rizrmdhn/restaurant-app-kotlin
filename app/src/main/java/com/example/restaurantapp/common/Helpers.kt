@@ -28,5 +28,7 @@ object Helpers {
         return "https://restaurant-api.dicoding.dev/images/large/$pictureId"
     }
 
-
+    fun avatarGenerator(username: String): String {
+        return "https://ui-avatars.com/api/?name=$username&length=1&background=random&size=128"
+    }
 }

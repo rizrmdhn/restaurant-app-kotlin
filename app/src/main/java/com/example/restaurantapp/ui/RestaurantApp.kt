@@ -11,13 +11,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.restaurantapp.common.Helpers
 import com.example.restaurantapp.ui.components.TopBar
 import com.example.restaurantapp.ui.navigation.Screen
+import com.example.restaurantapp.ui.screen.detail.DetailScreen
 import com.example.restaurantapp.ui.screen.favorite.FavoriteScreen
 import com.example.restaurantapp.ui.screen.home.HomeScreen
 import com.example.restaurantapp.ui.theme.RestaurantAppTheme
@@ -45,34 +48,36 @@ fun RestaurantApp(
     ) {
         Scaffold(
             topBar = {
-                TopBar(
-                    onOpenSearch = {
-                        viewModel.setSearchOpen(true)
-                    },
-                    onGoToHome = {
-                        navController.navigate(Screen.Home.route)
-                    },
-                    onGoToFavorite = {
-                        navController.navigate(Screen.Favorite.route)
-                    },
-                    isInFavoriteScreen = currentRoute == Screen.Favorite.route,
-                    isInDarkMode = darkMode,
-                    onToggleDarkMode = {
-                        viewModel.setDarkMode(!darkMode)
-                    },
-                    isSearchOpen = isSearchOpen,
-                    query = searchQuery,
-                    searchPlaceHolder = "Cari restaurant...",
-                    onQueryChange = {
-                        viewModel.onSearch(it)
-                    },
-                    onSearch = {},
-                    active = false,
-                    onActiveChange = {},
-                    onClearQuery = {
-                        viewModel.clearQuery()
-                    }
-                )
+                if (currentRoute != Screen.DetailRestaurant.route) {
+                    TopBar(
+                        onOpenSearch = {
+                            viewModel.setSearchOpen(true)
+                        },
+                        onGoToHome = {
+                            navController.navigate(Screen.Home.route)
+                        },
+                        onGoToFavorite = {
+                            navController.navigate(Screen.Favorite.route)
+                        },
+                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
+                        isInDarkMode = darkMode,
+                        onToggleDarkMode = {
+                            viewModel.setDarkMode(!darkMode)
+                        },
+                        isSearchOpen = isSearchOpen,
+                        query = searchQuery,
+                        searchPlaceHolder = "Cari restaurant...",
+                        onQueryChange = {
+                            viewModel.onSearch(it)
+                        },
+                        onSearch = {},
+                        active = false,
+                        onActiveChange = {},
+                        onClearQuery = {
+                            viewModel.clearQuery()
+                        }
+                    )
+                }
             }
         ) { innerPadding ->
             NavHost(
@@ -83,14 +88,43 @@ fun RestaurantApp(
                 composable(
                     Screen.Home.route
                 ) {
-                    HomeScreen()
+                    HomeScreen(
+                        navigateToDetail = { id ->
+                            navController.navigate(
+                                Screen.DetailRestaurant.createRoute(id)
+                            )
+                        }
+                    )
                 }
                 composable(
                     Screen.Favorite.route
                 ) {
-                    FavoriteScreen()
+                    FavoriteScreen(
+                        navigateToDetail = { id ->
+                            navController.navigate(
+                                Screen.DetailRestaurant.createRoute(id)
+                            )
+                        }
+                    )
                 }
-
+                composable(
+                    route = Screen.DetailRestaurant.route,
+                    arguments = listOf(navArgument("id") { type = NavType.StringType })
+                ) {
+                    val id = it.arguments?.getString("id")
+                    if (id != null) {
+                         DetailScreen(
+                             restaurantId = id,
+                             navigateBack = {
+                                 navController.popBackStack()
+                             },
+                             isInDarkMode = darkMode,
+                             onToggleDarkMode = {
+                                 viewModel.setDarkMode(!darkMode)
+                             }
+                         )
+                    }
+                }
             }
         }
     }

@@ -27,7 +27,8 @@ fun HomeScreen(
         factory = Helpers.viewModelFactoryHelper(
             LocalContext.current
         )
-    )
+    ),
+    navigateToDetail: (String) -> Unit
 ) {
     viewModel.state.collectAsState(initial = Result.Loading).value.let {
         when (it) {
@@ -44,7 +45,10 @@ fun HomeScreen(
             }
 
             is Result.Success -> {
-                HomeScreenContent(restaurant = it.data)
+                HomeScreenContent(
+                    restaurant = it.data,
+                    navigateToDetail = navigateToDetail
+                )
             }
 
             is Result.Error -> {
@@ -61,7 +65,8 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreenContent(
-    restaurant: List<RestaurantsItem>
+    restaurant: List<RestaurantsItem>,
+    navigateToDetail: (String) -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -77,7 +82,9 @@ fun HomeScreenContent(
                 pictureId = item.pictureId,
                 city = item.city,
                 rating = item.rating as Double,
-                onClick = { /*TODO*/ }
+                onClick = {
+                    navigateToDetail(item.id)
+                }
             )
         }
     }
@@ -89,7 +96,9 @@ fun HomeScreenContent(
 @Composable
 fun HomeScreenPreview() {
     RestaurantAppTheme {
-        HomeScreen()
+        HomeScreen(
+            navigateToDetail = {}
+        )
     }
 }
 
@@ -97,6 +106,8 @@ fun HomeScreenPreview() {
 @Composable
 fun HomeScreenDarkPreview() {
     RestaurantAppTheme {
-        HomeScreen()
+        HomeScreen(
+            navigateToDetail = {}
+        )
     }
 }

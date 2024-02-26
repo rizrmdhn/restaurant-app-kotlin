@@ -32,7 +32,8 @@ fun FavoriteScreen(
         factory = Helpers.viewModelFactoryHelper(
             LocalContext.current
         )
-    )
+    ),
+    navigateToDetail: (String) -> Unit
 ) {
     viewModel.state.collectAsState(initial = Result.Loading).value.let {
         when (it) {
@@ -50,7 +51,8 @@ fun FavoriteScreen(
 
             is Result.Success -> {
                 FavoriteScreenContent(
-                    restaurant = it.data
+                    restaurant = it.data,
+                    navigateToDetail = navigateToDetail
                 )
             }
 
@@ -69,7 +71,8 @@ fun FavoriteScreen(
 
 @Composable
 fun FavoriteScreenContent(
-    restaurant: List<FavoriteRestaurantEntity>
+    restaurant: List<FavoriteRestaurantEntity>,
+    navigateToDetail: (String) -> Unit
 ) {
     val listState = rememberLazyListState()
 
@@ -98,7 +101,9 @@ fun FavoriteScreenContent(
                     pictureId = item.pictureId,
                     city = item.city,
                     rating = item.rating,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        navigateToDetail(item.id)
+                    }
                 )
             }
         }
@@ -109,7 +114,9 @@ fun FavoriteScreenContent(
 @Composable
 fun FavoriteScreenPreview() {
     RestaurantAppTheme {
-        FavoriteScreen()
+        FavoriteScreen(
+            navigateToDetail = {}
+        )
     }
 }
 
@@ -117,7 +124,9 @@ fun FavoriteScreenPreview() {
 @Composable
 fun FavoriteScreenContentPreview() {
     RestaurantAppTheme {
-        FavoriteScreen()
+        FavoriteScreen(
+            navigateToDetail = {}
+        )
     }
 }
 
