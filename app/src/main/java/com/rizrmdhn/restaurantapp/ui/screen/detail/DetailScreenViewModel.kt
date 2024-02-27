@@ -24,13 +24,13 @@ class DetailScreenViewModel(
         viewModelScope.launch {
             _state.value = Result.Loading
             repository.getDetailRestaurant(id)
-                .catch {
-                    _state.value = Result.Error(it.message.toString())
+                .catch { e ->
+                    _state.value = Result.Error(e.message.toString())
                 }
-                .collect {
-                    if (it != null) {
-                        _state.value = Result.Success(it)
-                    }
+                .collect { restaurant ->
+                   if (restaurant != null) {
+                       _state.value = Result.Success(restaurant)
+                   }
                 }
         }
     }
@@ -52,5 +52,4 @@ class DetailScreenViewModel(
             }
         }
     }
-
 }

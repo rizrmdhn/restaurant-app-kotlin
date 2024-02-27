@@ -280,7 +280,7 @@ fun DetailRestaurantLoaderPreview() {
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun DetailRestaurantLoaderDarkPreview() {
-    RestaurantAppTheme() {
+    RestaurantAppTheme {
         DetailRestaurantLoader()
     }
 }

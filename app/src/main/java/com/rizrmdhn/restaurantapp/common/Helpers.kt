@@ -10,9 +10,12 @@ object Helpers {
             Injection.provideRestaurantRepository(
                 context
             ),
+            Injection.provideGithubRepository(
+                context
+            ),
             Injection.provideSettingPreferences(
                 context
-            )
+            ),
         )
     }
 

@@ -37,7 +37,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,6 +55,7 @@ import com.rizrmdhn.restaurantapp.data.remote.response.FoodsItem
 import com.rizrmdhn.restaurantapp.data.remote.response.Menus
 import com.rizrmdhn.restaurantapp.data.remote.response.Restaurant
 import com.rizrmdhn.restaurantapp.ui.components.DetailRestaurantLoader
+import com.rizrmdhn.restaurantapp.ui.components.ErrorText
 import com.rizrmdhn.restaurantapp.ui.components.RestaurantCategories
 import com.rizrmdhn.restaurantapp.ui.components.RestaurantCustomerReviews
 import com.rizrmdhn.restaurantapp.ui.components.RestaurantDrinks
@@ -94,11 +94,8 @@ fun DetailScreen(
             }
 
             is Result.Error -> {
-                Text(
-                    text = "Error: $state",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
+                ErrorText(
+                    state.errorMessage
                 )
             }
         }
@@ -217,15 +214,15 @@ fun DetailScreenContent(
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(
-                        start = 16.dp, end = 16.dp, bottom = 16.dp
-                    )
+                    .padding(bottom = 16.dp)
             ) {
                 Text(
                     text = restaurantDetail.name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 Spacer(
                     modifier = Modifier.height(16.dp)
@@ -234,7 +231,9 @@ fun DetailScreenContent(
                     text = restaurantDetail.address,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 Spacer(
                     modifier = Modifier.height(16.dp)
@@ -244,6 +243,7 @@ fun DetailScreenContent(
                         text = restaurantDetail.city,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                     Spacer(
                         modifier = Modifier.width(16.dp)
@@ -252,6 +252,7 @@ fun DetailScreenContent(
                         text = "Rating: ${restaurantDetail.rating}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
                 Spacer(
@@ -261,7 +262,9 @@ fun DetailScreenContent(
                     text = restaurantDetail.description,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
                 )
                 Spacer(
                     modifier = Modifier.height(16.dp)
@@ -271,12 +274,16 @@ fun DetailScreenContent(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 Spacer(
                     modifier = Modifier.height(16.dp)
                 )
-                LazyRow {
+                LazyRow(
+                    modifier = Modifier.padding(start = 16.dp)
+                ) {
                     items(restaurantDetail.categories, key = { it.name }) { category ->
                         Row {
                             RestaurantCategories(
@@ -296,12 +303,16 @@ fun DetailScreenContent(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 Spacer(
                     modifier = Modifier.height(16.dp)
                 )
-                LazyRow {
+                LazyRow(
+                    modifier = Modifier.padding(start = 16.dp)
+                ) {
                     items(restaurantDetail.menus.foods, key = { it.name }) { menu ->
                         Row {
                             RestaurantFoods(
@@ -321,12 +332,17 @@ fun DetailScreenContent(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 Spacer(
                     modifier = Modifier.height(16.dp)
                 )
-                LazyRow {
+                LazyRow(
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                ) {
                     items(restaurantDetail.menus.drinks, key = { it.name }) { menu ->
                         Row {
                             RestaurantDrinks(
@@ -346,16 +362,22 @@ fun DetailScreenContent(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
                 )
                 Spacer(
                     modifier = Modifier.height(16.dp)
                 )
-                LazyRow {
-                    items(restaurantDetail.customerReviews, key = { it.name }) { review ->
+                LazyRow(
+                    modifier = modifier.padding(start = 16.dp)
+                ) {
+                    items(restaurantDetail.customerReviews.size) {index ->
                         Row {
                             RestaurantCustomerReviews(
-                                review.name, review.review, review.date
+                                name =  restaurantDetail.customerReviews[index].name,
+                                review = restaurantDetail.customerReviews[index].review,
+                                date =  restaurantDetail.customerReviews[index].date,
                             )
                             Spacer(
                                 modifier = Modifier.width(8.dp)
@@ -372,36 +394,37 @@ fun DetailScreenContent(
 @Composable
 fun DetailScreenContentPreview() {
     RestaurantAppTheme {
-        DetailScreenContent(restaurantDetail = Restaurant(
-            id = "restaurantId",
-            name = "Restaurant Name",
-            description = "Restaurant Description",
-            pictureId = "restaurantPictureId",
-            city = "Restaurant City",
-            rating = 4.5,
-            address = "Restaurant Address",
-            categories = listOf(
-                CategoriesItem(
-                    name = "Category Name"
+        DetailScreenContent(
+            restaurantDetail = Restaurant(
+                id = "restaurantId",
+                name = "Restaurant Name",
+                description = "Restaurant Description",
+                pictureId = "restaurantPictureId",
+                city = "Restaurant City",
+                rating = 4.5,
+                address = "Restaurant Address",
+                categories = listOf(
+                    CategoriesItem(
+                        name = "Category Name"
+                    )
+                ),
+                customerReviews = listOf(
+                    CustomerReviewsItem(
+                        name = "Customer Name", review = "Customer Review", date = "Customer Date"
+                    )
+                ),
+                menus = Menus(
+                    foods = listOf(
+                        FoodsItem(
+                            name = "Food Name",
+                        )
+                    ), drinks = listOf(
+                        DrinksItem(
+                            name = "Drink Name",
+                        )
+                    )
                 )
             ),
-            customerReviews = listOf(
-                CustomerReviewsItem(
-                    name = "Customer Name", review = "Customer Review", date = "Customer Date"
-                )
-            ),
-            menus = Menus(
-                foods = listOf(
-                    FoodsItem(
-                        name = "Food Name",
-                    )
-                ), drinks = listOf(
-                    DrinksItem(
-                        name = "Drink Name",
-                    )
-                )
-            )
-        ),
             navigateBack = {},
             isInDarkMode = false,
             onToggleDarkMode = {},
@@ -415,36 +438,37 @@ fun DetailScreenContentPreview() {
 @Composable
 fun DetailScreenContentDarkPreview() {
     RestaurantAppTheme {
-        DetailScreenContent(restaurantDetail = Restaurant(
-            id = "restaurantId",
-            name = "Restaurant Name",
-            description = "Restaurant Description",
-            pictureId = "restaurantPictureId",
-            city = "Restaurant City",
-            rating = 4.5,
-            address = "Restaurant Address",
-            categories = listOf(
-                CategoriesItem(
-                    name = "Category Name"
+        DetailScreenContent(
+            restaurantDetail = Restaurant(
+                id = "restaurantId",
+                name = "Restaurant Name",
+                description = "Restaurant Description",
+                pictureId = "restaurantPictureId",
+                city = "Restaurant City",
+                rating = 4.5,
+                address = "Restaurant Address",
+                categories = listOf(
+                    CategoriesItem(
+                        name = "Category Name"
+                    )
+                ),
+                customerReviews = listOf(
+                    CustomerReviewsItem(
+                        name = "Customer Name", review = "Customer Review", date = "Customer Date"
+                    )
+                ),
+                menus = Menus(
+                    foods = listOf(
+                        FoodsItem(
+                            name = "Food Name",
+                        )
+                    ), drinks = listOf(
+                        DrinksItem(
+                            name = "Drink Name",
+                        )
+                    )
                 )
             ),
-            customerReviews = listOf(
-                CustomerReviewsItem(
-                    name = "Customer Name", review = "Customer Review", date = "Customer Date"
-                )
-            ),
-            menus = Menus(
-                foods = listOf(
-                    FoodsItem(
-                        name = "Food Name",
-                    )
-                ), drinks = listOf(
-                    DrinksItem(
-                        name = "Drink Name",
-                    )
-                )
-            )
-        ),
             navigateBack = {},
             isInDarkMode = true,
             onToggleDarkMode = {},

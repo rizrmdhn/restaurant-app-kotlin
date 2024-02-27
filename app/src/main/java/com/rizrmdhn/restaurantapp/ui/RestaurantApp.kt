@@ -14,11 +14,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.rizrmdhn.restaurantapp.common.Helpers
-import com.rizrmdhn.restaurantapp.ui.components.TopBar
 import com.rizrmdhn.restaurantapp.ui.navigation.Screen
 import com.rizrmdhn.restaurantapp.ui.screen.about.AboutScreen
 import com.rizrmdhn.restaurantapp.ui.screen.detail.DetailScreen
@@ -35,9 +33,6 @@ fun RestaurantApp(
         )
     )
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
     val darkMode by viewModel.darkMode.collectAsState(initial = false)
 
     viewModel.getDarkMode()
@@ -45,32 +40,7 @@ fun RestaurantApp(
     RestaurantAppTheme(
         darkTheme = darkMode
     ) {
-        Scaffold(topBar = {
-            if (currentRoute != Screen.DetailRestaurant.route) {
-                TopBar(
-                    onOpenSearch = {},
-                    onGoToHome = {
-                        navController.navigate(Screen.Home.route)
-                    },
-                    onGoToFavorite = {
-                        navController.navigate(Screen.Favorite.route)
-                    },
-                    isInFavoriteScreen = currentRoute == Screen.Favorite.route,
-                    isInDarkMode = darkMode,
-                    onToggleDarkMode = {
-                        viewModel.setDarkMode(!darkMode)
-                    },
-                    isSearchOpen = false,
-                    query = "",
-                    searchPlaceHolder = "Cari restaurant...",
-                    onQueryChange = { },
-                    onSearch = { },
-                    active = false,
-                    onActiveChange = { },
-                    onClearQuery = { }
-                )
-            }
-        }) { innerPadding ->
+        Scaffold { innerPadding ->
             NavHost(
                 navController = navController,
                 startDestination = Screen.Home.route,
@@ -99,7 +69,15 @@ fun RestaurantApp(
                     )
                 }
                 composable(Screen.About.route) {
-                    AboutScreen()
+                    AboutScreen(
+                        navigateBack = {
+                            navController.navigateUp()
+                        },
+                        isInDarkMode = darkMode,
+                        onToggleDarkMode = {
+                            viewModel.setDarkMode(!darkMode)
+                        }
+                    )
                 }
                 composable(
                     route = Screen.DetailRestaurant.route,
@@ -107,7 +85,7 @@ fun RestaurantApp(
                 ) {
                     val id = it.arguments?.getString("id") ?: ""
                     DetailScreen(restaurantId = id, navigateBack = {
-                        navController.popBackStack()
+                        navController.navigateUp()
                     }, isInDarkMode = darkMode, onToggleDarkMode = {
                         viewModel.setDarkMode(!darkMode)
                     })

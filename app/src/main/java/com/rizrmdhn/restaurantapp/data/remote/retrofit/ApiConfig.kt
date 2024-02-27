@@ -27,5 +27,24 @@ class ApiConfig {
 
             return retrofit.create(ApiService::class.java)
         }
+
+        fun getApiGithubService(): ApiGithubService {
+            val loggingInterceptor = if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            } else {
+                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
+            }
+
+            val client = OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .build()
+            val retrofit = Retrofit.Builder()
+                .baseUrl(BuildConfig.BASE_URL_GITHUB)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(client)
+                .build()
+
+            return retrofit.create(ApiGithubService::class.java)
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.rizrmdhn.restaurantapp.data.remote.retrofit
 
+import com.rizrmdhn.restaurantapp.data.remote.response.GithubDetailUser
 import com.rizrmdhn.restaurantapp.data.remote.response.RestaurantAddReviewResponse
 import com.rizrmdhn.restaurantapp.data.remote.response.RestaurantDetailResponse
 import com.rizrmdhn.restaurantapp.data.remote.response.RestaurantListResponse
@@ -26,9 +27,11 @@ interface ApiService {
         @Query("q") query: String
     ): Call<RestaurantSearchResponse>
 
-    @Headers("Content-Type: application/json")
-    @POST("review")
-    fun postReview(
-    @Body body: Map<String, String>
-    ): Call<RestaurantAddReviewResponse>
+}
+
+interface ApiGithubService {
+    @GET("users/{username}")
+    fun getDetailGithubUser(
+        @Path("username") username: String
+    ): Call<GithubDetailUser>
 }

@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,6 +25,7 @@ fun TopBar(
     onOpenSearch: () -> Unit,
     onGoToHome: () -> Unit,
     onGoToFavorite: () -> Unit,
+    onGoToAbout: () -> Unit,
     isInFavoriteScreen: Boolean,
     isInDarkMode: Boolean,
     onToggleDarkMode: () -> Unit,
@@ -52,7 +54,7 @@ fun TopBar(
                ) {
                    Icon(
                        imageVector = Icons.Default.Search,
-                       contentDescription = "Search",
+                       contentDescription = "search_button",
                    )
                }
                if (isInFavoriteScreen) {
@@ -61,7 +63,7 @@ fun TopBar(
                    ) {
                        Icon(
                            imageVector = Icons.Default.Home,
-                           contentDescription = "Home",
+                           contentDescription = "home_page",
                        )
                    }
                } else {
@@ -70,9 +72,17 @@ fun TopBar(
                    ) {
                        Icon(
                            imageVector = Icons.Default.Favorite,
-                           contentDescription = "Favorite",
+                           contentDescription = "favorite_page",
                        )
                    }
+               }
+               IconButton(
+                   onClick = onGoToAbout
+               ) {
+                   Icon(
+                       imageVector = Icons.Default.Info,
+                       contentDescription = "about_page"
+                   )
                }
                IconButton(
                    onClick = onToggleDarkMode
@@ -85,7 +95,7 @@ fun TopBar(
                                R.drawable.baseline_sunny_24
                            }
                        ),
-                       contentDescription = "Dark Mode",
+                       contentDescription = "dark_mode_toggle",
                    )
                }
            } else {
@@ -117,6 +127,7 @@ fun TopBarPreview() {
             onOpenSearch = {},
             onGoToHome = {},
             onGoToFavorite = {},
+            onGoToAbout = {},
             isInFavoriteScreen = false,
             onToggleDarkMode = {},
             isInDarkMode = false,
@@ -140,6 +151,7 @@ fun TopBarDarkPreview() {
             onOpenSearch = {},
             onGoToHome = {},
             onGoToFavorite = {},
+            onGoToAbout = {},
             isInFavoriteScreen = true,
             onToggleDarkMode = {},
             isInDarkMode = true,

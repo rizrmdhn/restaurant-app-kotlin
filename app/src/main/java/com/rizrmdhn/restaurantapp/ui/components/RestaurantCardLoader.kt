@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rizrmdhn.restaurantapp.ui.theme.RestaurantAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RestaurantCardLoader(
     modifier: Modifier = Modifier

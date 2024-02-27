@@ -6,6 +6,7 @@ import com.rizrmdhn.restaurantapp.data.RestaurantRepository
 import com.rizrmdhn.restaurantapp.data.Result
 import com.rizrmdhn.restaurantapp.data.remote.response.RestaurantsItem
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -26,8 +27,11 @@ class HomeScreenViewModel(
     private val _searchQuery: MutableStateFlow<String> = MutableStateFlow("")
     val searchQuery: StateFlow<String> get() = _searchQuery
 
+    private var currentSearchJob: Job? = null
+
     fun getRestaurants() {
         viewModelScope.launch {
+            _state.value = Result.Loading
             repository.getRestaurant().catch {
                 _state.value = Result.Error(it.message.toString())
             }.collect {
@@ -39,20 +43,30 @@ class HomeScreenViewModel(
     @OptIn(FlowPreview::class)
     fun searchRestaurants(query: String) {
         viewModelScope.launch {
+            _state.value = Result.Loading
             if (query.isBlank()) {
                 _searchQuery.value = query
                 getRestaurants()
             } else {
                 _searchQuery.value = query
-                _searchQuery.debounce(300).collectLatest {
-                    repository.searchRestaurant(
-                        query
-                    ).catch {
-                        _state.value = Result.Error(it.message.toString())
-                    }.collect {
-                        _state.value = Result.Success(it)
-                    }
+                // Cancel the previous search operation if it's still active
+                cancelPreviousSearch()
+
+                // Start a new search operation
+                val searchJob = launch {
+                    _searchQuery.debounce(300)
+                        .collectLatest { searchQuery ->
+                            repository.searchRestaurant(searchQuery)
+                                .catch { e ->
+                                    _state.value = Result.Error(e.message ?: "An error occurred")
+                                }
+                                .collect { restaurants ->
+                                    _state.value = Result.Success(restaurants)
+                                }
+                        }
                 }
+                // Store the reference to the current search job
+                currentSearchJob = searchJob
             }
         }
     }
@@ -67,6 +81,12 @@ class HomeScreenViewModel(
             _isSearchOpen.value = false
         } else {
             _searchQuery.value = ""
+            getRestaurants()
         }
+    }
+
+    private fun cancelPreviousSearch() {
+        currentSearchJob?.cancel()
+        currentSearchJob = null
     }
 }

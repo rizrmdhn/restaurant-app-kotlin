@@ -21,6 +21,7 @@ android {
         versionName = "1.0"
 
         buildConfigField("String", "BASE_URL", "\"https://restaurant-api.dicoding.dev\"")
+        buildConfigField("String", "BASE_URL_GITHUB", "\"https://api.github.com\"")
         buildConfigField("Boolean", "DEBUG", "$debug")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
