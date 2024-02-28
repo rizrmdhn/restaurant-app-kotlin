@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface RestaurantUseCase {
     fun getRestaurant(): Flow<Resource<List<Restaurant>>>
+    fun getFavoriteRestaurant(): Flow<Resource<List<Restaurant>>>
 }

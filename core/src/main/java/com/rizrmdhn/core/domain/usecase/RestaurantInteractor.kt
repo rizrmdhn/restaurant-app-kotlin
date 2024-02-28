@@ -7,4 +7,5 @@ class RestaurantInteractor(
 ): RestaurantUseCase {
     override fun getRestaurant() = restaurantRepository.getRestaurant()
 
+    override fun getFavoriteRestaurant() = restaurantRepository.getFavoriteRestaurant()
 }

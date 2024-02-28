@@ -1,4 +1,4 @@
-package com.rizrmdhn.restaurantappclean.ui.screen.home
+package com.rizrmdhn.restaurantappclean.ui.screen.favorite
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -24,24 +24,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rizrmdhn.core.data.Resource
 import com.rizrmdhn.core.domain.model.Restaurant
 import com.rizrmdhn.restaurantapp.ui.navigation.Screen
-import com.rizrmdhn.restaurantappclean.ui.components.ErrorText
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCard
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCardLoader
 import com.rizrmdhn.restaurantappclean.ui.components.TopBar
 import com.rizrmdhn.restaurantappclean.ui.theme.RestaurantAppCleanTheme
 import org.koin.androidx.compose.koinViewModel
 
+
 @Composable
-fun HomeScreen(
+fun FavoriteScreen(
     navController: NavHostController,
-    viewModel: HomeScreenViewModel = koinViewModel(),
+    viewModel: FavoriteScreenViewModel = koinViewModel(),
     isInDarkMode: Boolean,
     onToggleDarkMode: () -> Unit,
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    viewModel.restaurant.let {
+    viewModel.favoriteRestaurant.let {
         when (val restaurant = it.collectAsState(
             Resource.Loading()
         ).value) {
@@ -84,15 +84,13 @@ fun HomeScreen(
             }
 
             is Resource.Success -> {
-                restaurant.data?.let { it1 ->
-                    HomeScreenContent(
-                        restaurant = it1,
+                restaurant.data?.let {
+                    FavoriteScreenContent(
+                        restaurant = it,
                         navigateToDetail = {
 
                         },
-                        onOpenSearch = {
-
-                        },
+                        onOpenSearch = {},
                         onGoToHome = {
                             navController.navigate(Screen.Home.route)
                         },
@@ -102,7 +100,7 @@ fun HomeScreen(
                         onGoToAbout = {
 
                         },
-                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
+                        isInFavoriteScreen = true,
                         isInDarkMode = isInDarkMode,
                         onToggleDarkMode = onToggleDarkMode,
                         isSearchOpen = false,
@@ -110,8 +108,8 @@ fun HomeScreen(
                         onQueryChange = {},
                         onSearch = {},
                         active = false,
-                        onActiveChange = { },
-                        onClearQuery = { }
+                        onActiveChange = {},
+                        onClearQuery = {}
                     )
                 }
             }
@@ -158,15 +156,13 @@ fun HomeScreen(
                         )
                     }
                 }
-
             }
         }
-
     }
 }
 
 @Composable
-fun HomeScreenContent(
+fun FavoriteScreenContent(
     restaurant: List<Restaurant>,
     navigateToDetail: (String) -> Unit,
     onOpenSearch: () -> Unit,
@@ -187,45 +183,42 @@ fun HomeScreenContent(
 ) {
     val listState = rememberLazyListState()
 
-    Scaffold(
-        topBar = {
-            TopBar(
-                onOpenSearch = onOpenSearch,
-                onGoToHome = onGoToHome,
-                onGoToFavorite = onGoToFavorite,
-                onGoToAbout = onGoToAbout,
-                isInFavoriteScreen = isInFavoriteScreen,
-                isInDarkMode = isInDarkMode,
-                onToggleDarkMode = onToggleDarkMode,
-                isSearchOpen = isSearchOpen,
-                query = query,
-                searchPlaceHolder = "Cari restaurant...",
-                onQueryChange = onQueryChange,
-                onSearch = onSearch,
-                active = active,
-                onActiveChange = onActiveChange,
-                onClearQuery = onClearQuery
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        TopBar(
+            onOpenSearch = onOpenSearch,
+            onGoToHome = onGoToHome,
+            onGoToFavorite = onGoToFavorite,
+            onGoToAbout = onGoToAbout,
+            isInFavoriteScreen = isInFavoriteScreen,
+            isInDarkMode = isInDarkMode,
+            onToggleDarkMode = onToggleDarkMode,
+            isSearchOpen = isSearchOpen,
+            query = query,
+            searchPlaceHolder = "Cari favorite restaurant...",
+            onQueryChange = onQueryChange,
+            onSearch = onSearch,
+            active = active,
+            onActiveChange = onActiveChange,
+            onClearQuery = onClearQuery
+        )
+    }) { innerPadding ->
         if (restaurant.isEmpty()) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
                 modifier = modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
+                    .padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Tidak ada restaurant",
+                    text = "Tidak ada favorite restaurant saat ini",
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center
                 )
             }
         } else {
             LazyColumn(
-                state = listState,
-                modifier = modifier.padding(innerPadding)
+                state = listState, modifier = modifier.padding(innerPadding)
             ) {
                 items(restaurant, key = { it.id }) { restaurant ->
                     RestaurantCard(
@@ -233,7 +226,7 @@ fun HomeScreenContent(
                         description = restaurant.description,
                         pictureId = restaurant.pictureId,
                         city = restaurant.city,
-                        rating = restaurant.rating as Double,
+                        rating = restaurant.rating,
                         onClick = {
 
                         }
@@ -244,31 +237,23 @@ fun HomeScreenContent(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
+fun FavoriteScreenPreview() {
     RestaurantAppCleanTheme {
-        HomeScreen(
+        FavoriteScreen(navController = NavHostController(LocalContext.current),
             isInDarkMode = false,
-            onToggleDarkMode = {},
-            navController = NavHostController(
-                LocalContext.current
-            )
-        )
+            onToggleDarkMode = {})
     }
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun HomeScreenDarkPreview() {
+fun FavoriteScreenContentPreview() {
     RestaurantAppCleanTheme {
-        HomeScreen(
+        FavoriteScreen(navController = NavHostController(LocalContext.current),
             isInDarkMode = false,
-            onToggleDarkMode = {},
-            navController = NavHostController(
-                LocalContext.current
-            )
-        )
+            onToggleDarkMode = {})
     }
 }
+

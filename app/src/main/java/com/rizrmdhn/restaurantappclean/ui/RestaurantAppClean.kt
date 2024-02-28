@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rizrmdhn.restaurantapp.ui.navigation.Screen
+import com.rizrmdhn.restaurantappclean.ui.screen.favorite.FavoriteScreen
 import com.rizrmdhn.restaurantappclean.ui.screen.home.HomeScreen
 
 @Composable
@@ -31,6 +32,17 @@ fun RestaurantApp(
                     Screen.Home.route
                 ) {
                     HomeScreen(
+                        navController = navController,
+                        onToggleDarkMode = {
+
+                        },
+                        isInDarkMode = false,
+                    )
+                }
+                composable(
+                    Screen.Favorite.route
+                ) {
+                    FavoriteScreen(
                         navController = navController,
                         onToggleDarkMode = {
 

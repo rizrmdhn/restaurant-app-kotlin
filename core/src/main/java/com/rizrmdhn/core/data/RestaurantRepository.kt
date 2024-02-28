@@ -3,13 +3,12 @@ package com.rizrmdhn.core.data
 import com.rizrmdhn.core.data.source.local.LocalDataSource
 import com.rizrmdhn.core.data.source.remote.RemoteDataSource
 import com.rizrmdhn.core.data.source.remote.network.ApiResponse
-import com.rizrmdhn.core.data.source.remote.response.RestaurantDetailResponse
 import com.rizrmdhn.core.data.source.remote.response.RestaurantsItem
 import com.rizrmdhn.core.domain.model.Restaurant
-import com.rizrmdhn.core.domain.model.RestaurantDetail
 import com.rizrmdhn.core.domain.repository.IRestaurantRepository
 import com.rizrmdhn.core.utils.DataMapper
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class RestaurantRepository(
@@ -36,5 +35,16 @@ class RestaurantRepository(
                 localDataSource.insertRestaurant(restaurantList)
             }
         }.asFlow()
+
+    override fun getFavoriteRestaurant(): Flow<Resource<List<Restaurant>>> {
+        return flow {
+            emit(Resource.Loading())
+            localDataSource.getFavoriteRestaurant().map {
+                DataMapper.mapEntitiesToDomain(it)
+            }.collect {
+                emit(Resource.Success(it))
+            }
+        }
+    }
 
 }
