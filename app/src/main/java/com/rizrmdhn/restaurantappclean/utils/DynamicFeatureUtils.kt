@@ -22,7 +22,6 @@ object DynamicFeatureUtils {
         return LoadDF(
             className = DynamicFeaturePackageFactory.DFFavorite.DF_FAVORITE_SCREEN,
             methodName = DynamicFeaturePackageFactory.DFFavorite.COMPOSE_METHOD_NAME,
-            // THE VIEW MODEL NAME SHOULD BE THE SAME AS THE VIEW MODEL NAME IN THE DYNAMIC FEATURE
             viewModel = koinViewModel<FavoriteScreenViewModel>(),
             navController = navController,
             isInDarkMode = isInDarkMode,
@@ -64,13 +63,13 @@ object DynamicFeatureUtils {
                         0
                     )
                 if (!isMethodInvoked) {
-                    return ErrorScreen(error = "Method not invoked")
+                    return ErrorScreen(error = "Method not invoked", navController = navController)
                 }
             } else {
-                return ErrorScreen(error = "Method not found")
+                return ErrorScreen(error = "Method not found", navController = navController)
             }
         } else {
-            return ErrorScreen(error = errorText)
+            return ErrorScreen(error = errorText, navController = navController)
         }
     }
 

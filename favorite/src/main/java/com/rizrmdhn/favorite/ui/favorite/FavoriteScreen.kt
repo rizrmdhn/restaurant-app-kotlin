@@ -107,7 +107,8 @@ fun FavoriteScreen(
                         onSearch = {},
                         active = false,
                         onActiveChange = {},
-                        onClearQuery = {})
+                        onClearQuery = {}
+                    )
                 }
             }
 
