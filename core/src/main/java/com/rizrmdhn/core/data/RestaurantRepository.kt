@@ -47,4 +47,12 @@ class RestaurantRepository(
         }
     }
 
+
+    override fun getDarkMode(): Flow<Boolean> {
+        return localDataSource.getThemeSetting()
+    }
+
+    override suspend fun setDarkMode(isDarkMode: Boolean) {
+        localDataSource.saveThemeSetting(isDarkMode)
+    }
 }

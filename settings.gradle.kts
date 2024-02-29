@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "RestaurantAppClean"
 include(":app")
 include(":core")
+include(":favorite")

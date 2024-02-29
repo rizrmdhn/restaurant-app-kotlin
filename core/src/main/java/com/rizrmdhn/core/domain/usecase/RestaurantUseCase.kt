@@ -7,4 +7,9 @@ import kotlinx.coroutines.flow.Flow
 interface RestaurantUseCase {
     fun getRestaurant(): Flow<Resource<List<Restaurant>>>
     fun getFavoriteRestaurant(): Flow<Resource<List<Restaurant>>>
+
+
+    fun getDarkMode(): Flow<Boolean>
+
+    suspend fun setDarkMode(isDarkMode: Boolean)
 }

@@ -1,7 +1,9 @@
 package com.rizrmdhn.restaurantappclean
 
 import android.app.Application
+import com.rizrmdhn.core.di.databaseModule
 import com.rizrmdhn.core.di.networkModule
+import com.rizrmdhn.core.di.preferencesModule
 import com.rizrmdhn.core.di.repositoryModule
 import com.rizrmdhn.restaurantappclean.di.useCaseModule
 import com.rizrmdhn.restaurantappclean.di.viewModelModule
@@ -10,7 +12,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
 
-class MyApplication : Application() {
+class MyApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
@@ -18,6 +20,8 @@ class MyApplication : Application() {
             androidContext(this@MyApplication)
             modules(
                 listOf(
+                    databaseModule,
+                    preferencesModule,
                     networkModule,
                     repositoryModule,
                     useCaseModule,

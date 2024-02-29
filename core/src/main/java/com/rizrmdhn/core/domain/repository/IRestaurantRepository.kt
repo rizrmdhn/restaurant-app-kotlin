@@ -8,4 +8,10 @@ interface IRestaurantRepository {
     fun getRestaurant(): Flow<Resource<List<Restaurant>>>
 
     fun getFavoriteRestaurant(): Flow<Resource<List<Restaurant>>>
+
+    // Dark Mode
+    fun getDarkMode(): Flow<Boolean>
+
+
+    suspend fun setDarkMode(isDarkMode: Boolean)
 }

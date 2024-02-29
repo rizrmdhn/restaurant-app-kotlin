@@ -1,0 +1,41 @@
+package com.rizrmdhn.restaurantappclean.utils
+
+import android.text.TextUtils
+import android.util.Log
+import java.lang.reflect.Method
+import java.lang.reflect.Modifier
+
+fun findMethodByReflection(classMethod: Class<*>?, methodName: String): Method? {
+    return try {
+        if (!TextUtils.isEmpty(methodName)) {
+            classMethod?.let { clazz ->
+                clazz.methods.find { it.name.equals(methodName) && Modifier.isStatic(it.modifiers) }
+            } ?: run {
+                null
+            }
+        } else {
+            null
+        }
+    } catch (e: Throwable) {
+        null
+    }
+}
+
+fun loadClassByReflection(className: String): Class<*>? {
+    return try {
+        val classLoader = ::loadClassByReflection.javaClass.classLoader
+        classLoader?.loadClass(className)
+    } catch (e: Throwable) {
+        null
+    }
+}
+
+fun invokeMethod(method: Method, obj: Any, vararg args: Any): Boolean {
+    return try {
+        method.invoke(obj, *(args))
+        true
+    } catch (e: Throwable) {
+        Log.e("invokeMethod", "invokeMethod: ${e.message}")
+        false
+    }
+}

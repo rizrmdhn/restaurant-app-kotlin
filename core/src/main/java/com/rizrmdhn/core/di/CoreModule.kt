@@ -4,6 +4,8 @@ import androidx.room.Room
 import com.rizrmdhn.core.BuildConfig
 import com.rizrmdhn.core.data.RestaurantRepository
 import com.rizrmdhn.core.data.source.local.LocalDataSource
+import com.rizrmdhn.core.data.source.local.preferences.SettingPreferences
+import com.rizrmdhn.core.data.source.local.preferences.dataStore
 import com.rizrmdhn.core.data.source.local.room.RestaurantDatabase
 import com.rizrmdhn.core.data.source.remote.RemoteDataSource
 import com.rizrmdhn.core.data.source.remote.network.ApiService
@@ -27,6 +29,13 @@ val databaseModule = module {
 }
 
 
+val preferencesModule = module {
+    single {
+        val settingPreferences = SettingPreferences(androidContext().dataStore)
+        settingPreferences
+    }
+}
+
 
 val networkModule = module {
     single {
@@ -47,7 +56,7 @@ val networkModule = module {
 }
 
 val repositoryModule = module {
-    single { LocalDataSource(get()) }
+    single { LocalDataSource(get(), get()) }
     single { RemoteDataSource(get()) }
     single<IRestaurantRepository> {
         RestaurantRepository(

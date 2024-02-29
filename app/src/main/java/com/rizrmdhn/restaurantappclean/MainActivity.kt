@@ -6,12 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.rizrmdhn.core.di.databaseModule
 import com.rizrmdhn.core.di.networkModule
+import com.rizrmdhn.core.di.preferencesModule
 import com.rizrmdhn.core.di.repositoryModule
 import com.rizrmdhn.restaurantappclean.di.useCaseModule
 import com.rizrmdhn.restaurantappclean.di.viewModelModule
@@ -25,19 +23,6 @@ import org.koin.core.logger.Level
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        startKoin {
-            androidLogger(Level.DEBUG)
-            androidContext(this@MainActivity)
-            modules(
-                listOf(
-                    databaseModule,
-                    networkModule,
-                    repositoryModule,
-                    useCaseModule,
-                    viewModelModule
-                )
-            )
-        }
         setContent {
             RestaurantAppCleanTheme {
                 // A surface container using the 'background' color from the theme

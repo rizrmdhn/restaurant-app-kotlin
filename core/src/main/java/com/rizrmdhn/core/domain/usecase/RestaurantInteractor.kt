@@ -8,4 +8,8 @@ class RestaurantInteractor(
     override fun getRestaurant() = restaurantRepository.getRestaurant()
 
     override fun getFavoriteRestaurant() = restaurantRepository.getFavoriteRestaurant()
+
+    override fun getDarkMode() = restaurantRepository.getDarkMode()
+
+    override suspend fun setDarkMode(isDarkMode: Boolean) = restaurantRepository.setDarkMode(isDarkMode)
 }

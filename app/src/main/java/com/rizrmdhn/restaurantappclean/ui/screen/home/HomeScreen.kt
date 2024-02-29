@@ -1,6 +1,8 @@
 package com.rizrmdhn.restaurantappclean.ui.screen.home
 
+import android.content.Context
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +26,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rizrmdhn.core.data.Resource
 import com.rizrmdhn.core.domain.model.Restaurant
 import com.rizrmdhn.restaurantapp.ui.navigation.Screen
-import com.rizrmdhn.restaurantappclean.ui.components.ErrorText
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCard
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCardLoader
 import com.rizrmdhn.restaurantappclean.ui.components.TopBar
@@ -37,15 +38,16 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
     isInDarkMode: Boolean,
     onToggleDarkMode: () -> Unit,
+    context: Context = LocalContext.current
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    viewModel.restaurant.let {
-        when (val restaurant = it.collectAsState(
-            Resource.Loading()
-        ).value) {
+    viewModel.state.collectAsState().value.let { result ->
+        when (result) {
             is Resource.Loading -> {
+                viewModel.getRestaurants()
+                
                 Scaffold(
                     topBar = {
                         TopBar(
@@ -54,7 +56,15 @@ fun HomeScreen(
                                 navController.navigate(Screen.Home.route)
                             },
                             onGoToFavorite = {
-                                navController.navigate(Screen.Favorite.route)
+                                try {
+                                    navController.navigate(Screen.Favorite.route)
+                                } catch (e: Exception) {
+                                    Toast.makeText(
+                                        context,
+                                        "Terjadi kesalahan saat membuka halaman favorite: ${e.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             },
                             onGoToAbout = {
 
@@ -84,9 +94,9 @@ fun HomeScreen(
             }
 
             is Resource.Success -> {
-                restaurant.data?.let { it1 ->
+                result.data?.let {
                     HomeScreenContent(
-                        restaurant = it1,
+                        restaurant = it,
                         navigateToDetail = {
 
                         },
@@ -110,8 +120,8 @@ fun HomeScreen(
                         onQueryChange = {},
                         onSearch = {},
                         active = false,
-                        onActiveChange = { },
-                        onClearQuery = { }
+                        onActiveChange = {},
+                        onClearQuery = {}
                     )
                 }
             }
@@ -152,18 +162,17 @@ fun HomeScreen(
                         verticalArrangement = Arrangement.Center
                     ) {
                         Text(
-                            text = "Terjadi kesalahan saat mengambil data: ${restaurant.message}",
+                            text = "Terjadi kesalahan saat mengambil data: ${result.message}",
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center
                         )
                     }
                 }
-
             }
         }
-
     }
 }
+
 
 @Composable
 fun HomeScreenContent(
