@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class RestaurantDetailResponse(
 
 	@field:SerializedName("restaurant")
-	val restaurant: Restaurant,
+	val restaurant: RestaurantDetails,
 
 	@field:SerializedName("error")
 	val error: Boolean,
@@ -26,7 +26,7 @@ data class FoodsItem(
 	val name: String
 )
 
-data class Restaurant(
+data class RestaurantDetails(
 
 	@field:SerializedName("customerReviews")
 	val customerReviews: List<CustomerReviewsItem>,

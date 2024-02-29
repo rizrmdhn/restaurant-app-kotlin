@@ -10,6 +10,7 @@ import com.rizrmdhn.core.data.source.local.room.RestaurantDatabase
 import com.rizrmdhn.core.data.source.remote.RemoteDataSource
 import com.rizrmdhn.core.data.source.remote.network.ApiService
 import com.rizrmdhn.core.domain.repository.IRestaurantRepository
+import com.rizrmdhn.core.utils.AppExecutors
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -58,8 +59,10 @@ val networkModule = module {
 val repositoryModule = module {
     single { LocalDataSource(get(), get()) }
     single { RemoteDataSource(get()) }
+    factory { AppExecutors() }
     single<IRestaurantRepository> {
         RestaurantRepository(
+            get(),
             get(),
             get()
         )

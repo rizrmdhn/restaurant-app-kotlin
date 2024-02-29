@@ -1,8 +1,6 @@
 package com.rizrmdhn.restaurantappclean.ui.screen.home
 
-import android.content.Context
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,51 +36,70 @@ fun HomeScreen(
     viewModel: HomeScreenViewModel = koinViewModel(),
     isInDarkMode: Boolean,
     onToggleDarkMode: () -> Unit,
-    context: Context = LocalContext.current
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val isSearchOpen by viewModel.isSearchOpen.collectAsState()
+    val query by viewModel.query.collectAsState()
+
+    // Navigation Function
+    val navigateToHome = {
+        navController.navigate(Screen.Home.route)
+    }
+
+    val navigateToFavorite = {
+        navController.navigate(Screen.Favorite.route)
+    }
+
+    val navigateToAbout = {
+        navController.navigate(Screen.About.route)
+    }
+
+    // Function
+    val onToggleSearch = {
+        viewModel.setSearchOpen(!isSearchOpen)
+    }
+
+    val onQueryChange = { newQuery: String ->
+        viewModel.onQueryChange(newQuery)
+    }
+
+    fun onSearch() {
+        viewModel.onSearch()
+    }
+
+
+    val onClearQuery = {
+        viewModel.clearQuery()
+    }
 
     viewModel.state.collectAsState().value.let { result ->
         when (result) {
             is Resource.Loading -> {
                 viewModel.getRestaurants()
-                
-                Scaffold(
-                    topBar = {
-                        TopBar(
-                            onOpenSearch = {},
-                            onGoToHome = {
-                                navController.navigate(Screen.Home.route)
-                            },
-                            onGoToFavorite = {
-                                try {
-                                    navController.navigate(Screen.Favorite.route)
-                                } catch (e: Exception) {
-                                    Toast.makeText(
-                                        context,
-                                        "Terjadi kesalahan saat membuka halaman favorite: ${e.message}",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            },
-                            onGoToAbout = {
 
-                            },
-                            isInFavoriteScreen = currentRoute == Screen.Favorite.route,
-                            isInDarkMode = isInDarkMode,
-                            onToggleDarkMode = onToggleDarkMode,
-                            isSearchOpen = false,
-                            query = "",
-                            searchPlaceHolder = "Cari restaurant...",
-                            onQueryChange = {},
-                            onSearch = {},
-                            active = false,
-                            onActiveChange = {},
-                            onClearQuery = {}
-                        )
-                    }
-                ) { innerPadding ->
+                Scaffold(topBar = {
+                    TopBar(
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
+                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
+                        isInDarkMode = isInDarkMode,
+                        onToggleDarkMode = onToggleDarkMode,
+                        isSearchOpen = isSearchOpen,
+                        query = query,
+                        searchPlaceHolder = "Cari restaurant...",
+                        onQueryChange = {
+                            onQueryChange(it)
+                        },
+                        onSearch = {},
+                        active = false,
+                        onActiveChange = {},
+                        onClearQuery = onClearQuery
+                    )
+                }) { innerPadding ->
                     LazyColumn(
                         modifier = Modifier.padding(innerPadding),
                     ) {
@@ -97,63 +114,55 @@ fun HomeScreen(
                 result.data?.let {
                     HomeScreenContent(
                         restaurant = it,
-                        navigateToDetail = {
-
+                        navigateToDetail = { id ->
+                            navController.navigate(
+                                Screen.DetailRestaurant.createRoute(id)
+                            )
                         },
-                        onOpenSearch = {
-
-                        },
-                        onGoToHome = {
-                            navController.navigate(Screen.Home.route)
-                        },
-                        onGoToFavorite = {
-                            navController.navigate(Screen.Favorite.route)
-                        },
-                        onGoToAbout = {
-
-                        },
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
                         isInFavoriteScreen = currentRoute == Screen.Favorite.route,
                         isInDarkMode = isInDarkMode,
                         onToggleDarkMode = onToggleDarkMode,
-                        isSearchOpen = false,
-                        query = "",
-                        onQueryChange = {},
-                        onSearch = {},
+                        isSearchOpen = isSearchOpen,
+                        query = query,
+                        onQueryChange = {
+                            onQueryChange(it)
+                        },
+                        onSearch = { _ ->
+                            onSearch()
+                        },
                         active = false,
                         onActiveChange = {},
-                        onClearQuery = {}
+                        onClearQuery = onClearQuery
                     )
                 }
             }
 
             is Resource.Error -> {
-                Scaffold(
-                    topBar = {
-                        TopBar(
-                            onOpenSearch = {},
-                            onGoToHome = {
-                                navController.navigate(Screen.Home.route)
-                            },
-                            onGoToFavorite = {
-                                navController.navigate(Screen.Favorite.route)
-                            },
-                            onGoToAbout = {
+                Scaffold(topBar = {
+                    TopBar(
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
+                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
+                        isInDarkMode = isInDarkMode,
+                        onToggleDarkMode = onToggleDarkMode,
+                        isSearchOpen = isSearchOpen,
+                        query = query,
+                        searchPlaceHolder = "Cari restaurant...",
+                        onQueryChange = {
 
-                            },
-                            isInFavoriteScreen = currentRoute == Screen.Favorite.route,
-                            isInDarkMode = isInDarkMode,
-                            onToggleDarkMode = onToggleDarkMode,
-                            isSearchOpen = false,
-                            query = "",
-                            searchPlaceHolder = "Cari restaurant...",
-                            onQueryChange = {},
-                            onSearch = {},
-                            active = false,
-                            onActiveChange = {},
-                            onClearQuery = {}
-                        )
-                    }
-                ) { innerPadding ->
+                        },
+                        onSearch = {},
+                        active = false,
+                        onActiveChange = {},
+                        onClearQuery = onClearQuery
+                    )
+                }) { innerPadding ->
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -196,27 +205,25 @@ fun HomeScreenContent(
 ) {
     val listState = rememberLazyListState()
 
-    Scaffold(
-        topBar = {
-            TopBar(
-                onOpenSearch = onOpenSearch,
-                onGoToHome = onGoToHome,
-                onGoToFavorite = onGoToFavorite,
-                onGoToAbout = onGoToAbout,
-                isInFavoriteScreen = isInFavoriteScreen,
-                isInDarkMode = isInDarkMode,
-                onToggleDarkMode = onToggleDarkMode,
-                isSearchOpen = isSearchOpen,
-                query = query,
-                searchPlaceHolder = "Cari restaurant...",
-                onQueryChange = onQueryChange,
-                onSearch = onSearch,
-                active = active,
-                onActiveChange = onActiveChange,
-                onClearQuery = onClearQuery
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        TopBar(
+            onOpenSearch = onOpenSearch,
+            onGoToHome = onGoToHome,
+            onGoToFavorite = onGoToFavorite,
+            onGoToAbout = onGoToAbout,
+            isInFavoriteScreen = isInFavoriteScreen,
+            isInDarkMode = isInDarkMode,
+            onToggleDarkMode = onToggleDarkMode,
+            isSearchOpen = isSearchOpen,
+            query = query,
+            searchPlaceHolder = "Cari restaurant...",
+            onQueryChange = onQueryChange,
+            onSearch = onSearch,
+            active = active,
+            onActiveChange = onActiveChange,
+            onClearQuery = onClearQuery
+        )
+    }) { innerPadding ->
         if (restaurant.isEmpty()) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -233,20 +240,17 @@ fun HomeScreenContent(
             }
         } else {
             LazyColumn(
-                state = listState,
-                modifier = modifier.padding(innerPadding)
+                state = listState, modifier = modifier.padding(innerPadding)
             ) {
                 items(restaurant, key = { it.id }) { restaurant ->
-                    RestaurantCard(
-                        name = restaurant.name,
+                    RestaurantCard(name = restaurant.name,
                         description = restaurant.description,
                         pictureId = restaurant.pictureId,
                         city = restaurant.city,
-                        rating = restaurant.rating as Double,
+                        rating = restaurant.rating,
                         onClick = {
-
-                        }
-                    )
+                            navigateToDetail(restaurant.id)
+                        })
                 }
             }
         }
@@ -259,9 +263,7 @@ fun HomeScreenContent(
 fun HomeScreenPreview() {
     RestaurantAppCleanTheme {
         HomeScreen(
-            isInDarkMode = false,
-            onToggleDarkMode = {},
-            navController = NavHostController(
+            isInDarkMode = false, onToggleDarkMode = {}, navController = NavHostController(
                 LocalContext.current
             )
         )
@@ -273,9 +275,7 @@ fun HomeScreenPreview() {
 fun HomeScreenDarkPreview() {
     RestaurantAppCleanTheme {
         HomeScreen(
-            isInDarkMode = false,
-            onToggleDarkMode = {},
-            navController = NavHostController(
+            isInDarkMode = false, onToggleDarkMode = {}, navController = NavHostController(
                 LocalContext.current
             )
         )

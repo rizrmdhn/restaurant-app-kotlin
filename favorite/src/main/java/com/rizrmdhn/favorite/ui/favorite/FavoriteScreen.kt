@@ -42,6 +42,40 @@ fun FavoriteScreen(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
+    val isSearchOpen by viewModel.isSearchOpen.collectAsState()
+    val query by viewModel.query.collectAsState()
+
+    // Navigation Function
+    val navigateToHome = {
+        navController.navigate(Screen.Home.route)
+    }
+
+    val navigateToFavorite = {
+        navController.navigate(Screen.Favorite.route)
+    }
+
+    val navigateToAbout = {
+        navController.navigate(Screen.About.route)
+    }
+
+    // Function
+    val onToggleSearch = {
+        viewModel.setSearchOpen(!isSearchOpen)
+    }
+
+    val onQueryChange = { newQuery: String ->
+        viewModel.onQueryChange(newQuery)
+    }
+
+    fun onSearch() {
+        viewModel.onSearch()
+    }
+
+
+    val onClearQuery = {
+        viewModel.clearQuery()
+    }
+
 
     viewModel.state.collectAsState(initial = Resource.Loading()).value.let { result ->
         when (result) {
@@ -50,27 +84,23 @@ fun FavoriteScreen(
 
                 Scaffold(topBar = {
                     TopBar(
-                        onOpenSearch = {},
-                        onGoToHome = {
-                            navController.navigate(Screen.Home.route)
-                        },
-                        onGoToFavorite = {
-                            navController.navigate(Screen.Favorite.route)
-                        },
-                        onGoToAbout = {
-
-                        },
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
                         isInFavoriteScreen = currentRoute == Screen.Favorite.route,
                         isInDarkMode = isInDarkMode,
                         onToggleDarkMode = onToggleDarkMode,
-                        isSearchOpen = false,
-                        query = "",
+                        isSearchOpen = isSearchOpen,
+                        query = query,
                         searchPlaceHolder = "Cari restaurant...",
-                        onQueryChange = {},
-                        onSearch = {},
+                        onQueryChange = onQueryChange,
+                        onSearch = {
+                        },
                         active = false,
                         onActiveChange = {},
-                        onClearQuery = {})
+                        onClearQuery = onClearQuery
+                    )
                 }) { innerPadding ->
                     LazyColumn(
                         modifier = Modifier.padding(innerPadding),
@@ -85,56 +115,50 @@ fun FavoriteScreen(
             is Resource.Success -> {
                 result.data?.let {
                     FavoriteScreenContent(restaurant = it,
-                        navigateToDetail = {
-
+                        navigateToDetail = { id ->
+                            navController.navigate(
+                                Screen.DetailRestaurant.createRoute(id)
+                            )
                         },
-                        onOpenSearch = {},
-                        onGoToHome = {
-                            navController.navigate(Screen.Home.route)
-                        },
-                        onGoToFavorite = {
-                            navController.navigate(Screen.Favorite.route)
-                        },
-                        onGoToAbout = {
-
-                        },
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
                         isInFavoriteScreen = true,
                         isInDarkMode = isInDarkMode,
                         onToggleDarkMode = onToggleDarkMode,
-                        isSearchOpen = false,
-                        query = "",
-                        onQueryChange = {},
-                        onSearch = {},
+                        isSearchOpen = isSearchOpen,
+                        query = query,
+                        onQueryChange = onQueryChange,
+                        onSearch = {
+                            onSearch()
+                        },
                         active = false,
                         onActiveChange = {},
-                        onClearQuery = {}
+                        onClearQuery = onClearQuery
                     )
                 }
             }
 
             is Resource.Error -> {
                 Scaffold(topBar = {
-                    TopBar(onOpenSearch = {},
-                        onGoToHome = {
-                            navController.navigate(Screen.Home.route)
-                        },
-                        onGoToFavorite = {
-                            navController.navigate(Screen.Favorite.route)
-                        },
-                        onGoToAbout = {
-
-                        },
+                    TopBar(
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
                         isInFavoriteScreen = currentRoute == Screen.Favorite.route,
                         isInDarkMode = isInDarkMode,
                         onToggleDarkMode = onToggleDarkMode,
-                        isSearchOpen = false,
-                        query = "",
+                        isSearchOpen = isSearchOpen,
+                        query = query,
                         searchPlaceHolder = "Cari restaurant...",
-                        onQueryChange = {},
+                        onQueryChange = onQueryChange,
                         onSearch = {},
                         active = false,
                         onActiveChange = {},
-                        onClearQuery = {})
+                        onClearQuery = onClearQuery
+                    )
                 }) { innerPadding ->
                     Column(
                         modifier = Modifier
@@ -222,7 +246,7 @@ fun FavoriteScreenContent(
                         city = restaurant.city,
                         rating = restaurant.rating,
                         onClick = {
-
+                            navigateToDetail(restaurant.id)
                         })
                 }
             }

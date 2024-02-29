@@ -11,14 +11,23 @@ class LocalDataSource(
 ) {
     fun getAllRestaurant(): Flow<List<RestaurantEntity>> = restaurantDao.getAllRestaurants()
 
+
     fun getFavoriteRestaurant(): Flow<List<RestaurantEntity>> = restaurantDao.getFavoriteRestaurants()
 
+
     suspend fun insertRestaurant(restaurantList: List<RestaurantEntity>) = restaurantDao.insertRestaurants(restaurantList)
+
 
     fun setFavoriteRestaurant(restaurant: RestaurantEntity, newState: Boolean) {
         restaurant.isFavorite = newState
         restaurantDao.updateFavoriteRestaurant(restaurant)
     }
+
+    fun isFavoriteRestaurant(id: String): Flow<Boolean> = restaurantDao.isFavoriteRestaurant(id)
+
+    fun searchRestaurant(query: String): Flow<List<RestaurantEntity>> = restaurantDao.searchRestaurant(query)
+
+    fun searchFavoriteRestaurant(query: String): Flow<List<RestaurantEntity>> = restaurantDao.searchFavoriteRestaurant(query)
 
     fun getThemeSetting(): Flow<Boolean> = settingPreferences.getThemeSetting()
 

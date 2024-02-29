@@ -22,4 +22,13 @@ interface RestaurantDao {
 
     @Update
     fun updateFavoriteRestaurant(restaurant: RestaurantEntity)
+
+    @Query("SELECT EXISTS(SELECT 1 FROM restaurant WHERE id=:id AND isFavorite = 1)")
+    fun isFavoriteRestaurant(id: String): Flow<Boolean>
+
+    @Query("SELECT * FROM restaurant WHERE name LIKE '%' || :query || '%'")
+    fun searchRestaurant(query: String): Flow<List<RestaurantEntity>>
+
+    @Query("SELECT * FROM restaurant WHERE name LIKE '%' || :query || '%' AND isFavorite = 1")
+    fun searchFavoriteRestaurant(query: String): Flow<List<RestaurantEntity>>
 }

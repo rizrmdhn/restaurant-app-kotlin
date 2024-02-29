@@ -9,10 +9,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.rizrmdhn.core.common.Constants
 import com.rizrmdhn.restaurantapp.ui.navigation.Screen
+import com.rizrmdhn.restaurantappclean.ui.screen.about.AboutScreen
+import com.rizrmdhn.restaurantappclean.ui.screen.detail.DetailScreen
 import com.rizrmdhn.restaurantappclean.ui.screen.home.HomeScreen
 import com.rizrmdhn.restaurantappclean.ui.theme.RestaurantAppCleanTheme
 import com.rizrmdhn.restaurantappclean.utils.DFFavoriteScreen
@@ -57,6 +62,28 @@ fun RestaurantApp(
                             viewModel.setDarkMode(!darkMode)
                         }
                     )
+                }
+                composable(Screen.About.route) {
+                    AboutScreen(
+                        navigateBack = {
+                            navController.navigateUp()
+                        },
+                        isInDarkMode = darkMode,
+                        onToggleDarkMode = {
+                            viewModel.setDarkMode(!darkMode)
+                        }
+                    )
+                }
+                composable(
+                    route = Screen.DetailRestaurant.route,
+                    arguments = listOf(navArgument(Constants.id) { type = NavType.StringType })
+                ) {
+                    val id = it.arguments?.getString(Constants.id) ?: ""
+                    DetailScreen(restaurantId = id, navigateBack = {
+                        navController.navigateUp()
+                    }, isInDarkMode = darkMode, onToggleDarkMode = {
+                        viewModel.setDarkMode(!darkMode)
+                    })
                 }
             }
         }
