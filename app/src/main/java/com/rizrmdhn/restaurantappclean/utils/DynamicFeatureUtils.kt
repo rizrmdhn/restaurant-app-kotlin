@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.rizrmdhn.core.ui.favorite.FavoriteScreenViewModel
 import com.rizrmdhn.restaurantappclean.ui.components.ErrorScreen
-import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 

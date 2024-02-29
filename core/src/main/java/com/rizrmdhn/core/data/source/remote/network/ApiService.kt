@@ -24,9 +24,3 @@ interface ApiService {
 
 }
 
-interface ApiGithubService {
-    @GET("users/{username}")
-    suspend fun getDetailGithubUser(
-        @Path("username") username: String
-    ): GithubDetailUser
-}

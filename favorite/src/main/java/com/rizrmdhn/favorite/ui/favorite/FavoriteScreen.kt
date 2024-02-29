@@ -24,7 +24,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rizrmdhn.core.data.Resource
 import com.rizrmdhn.core.domain.model.Restaurant
 import com.rizrmdhn.core.ui.favorite.FavoriteScreenViewModel
-import com.rizrmdhn.restaurantapp.ui.navigation.Screen
+import com.rizrmdhn.restaurantappclean.ui.navigation.Screen
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCard
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCardLoader
 import com.rizrmdhn.restaurantappclean.ui.components.TopBar

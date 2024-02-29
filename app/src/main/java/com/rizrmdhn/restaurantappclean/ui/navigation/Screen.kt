@@ -1,4 +1,4 @@
-package com.rizrmdhn.restaurantapp.ui.navigation
+package com.rizrmdhn.restaurantappclean.ui.navigation
 
 sealed class Screen(val route: String) {
     data object Home : Screen("home")

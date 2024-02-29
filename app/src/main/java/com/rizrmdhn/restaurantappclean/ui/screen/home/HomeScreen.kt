@@ -23,7 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.rizrmdhn.core.data.Resource
 import com.rizrmdhn.core.domain.model.Restaurant
-import com.rizrmdhn.restaurantapp.ui.navigation.Screen
+import com.rizrmdhn.restaurantappclean.ui.navigation.Screen
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCard
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCardLoader
 import com.rizrmdhn.restaurantappclean.ui.components.TopBar
@@ -111,7 +111,7 @@ fun HomeScreen(
             }
 
             is Resource.Success -> {
-                result.data?.let {
+                result.data?.let { it ->
                     HomeScreenContent(
                         restaurant = it,
                         navigateToDetail = { id ->

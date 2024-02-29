@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.rizrmdhn.core.common.Constants
-import com.rizrmdhn.restaurantapp.ui.navigation.Screen
+import com.rizrmdhn.restaurantappclean.ui.navigation.Screen
 import com.rizrmdhn.restaurantappclean.ui.screen.about.AboutScreen
 import com.rizrmdhn.restaurantappclean.ui.screen.detail.DetailScreen
 import com.rizrmdhn.restaurantappclean.ui.screen.home.HomeScreen

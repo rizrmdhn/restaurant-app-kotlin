@@ -51,11 +51,11 @@ class RestaurantRepository(
                     }
 
                     is ApiResponse.Empty -> {
-                        emit(Resource.Error<RestaurantDetail>("Empty Data"))
+                        emit(Resource.Error("Empty Data"))
                     }
 
                     is ApiResponse.Error -> {
-                        emit(Resource.Error<RestaurantDetail>(apiResponse.errorMessage))
+                        emit(Resource.Error(apiResponse.errorMessage))
                     }
                 }
             }

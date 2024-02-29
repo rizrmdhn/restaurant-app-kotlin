@@ -1,16 +1,9 @@
 package com.rizrmdhn.core.common
 
 object Helpers {
-    fun smallRestaurantImage(pictureId: String): String {
-        return "https://restaurant-api.dicoding.dev/images/small/$pictureId"
-    }
 
     fun mediumRestaurantImage(pictureId: String): String {
         return "https://restaurant-api.dicoding.dev/images/medium/$pictureId"
-    }
-
-    fun largeRestaurantImage(pictureId: String): String {
-        return "https://restaurant-api.dicoding.dev/images/large/$pictureId"
     }
 
     fun avatarGenerator(username: String): String {

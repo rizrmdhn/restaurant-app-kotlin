@@ -41,8 +41,12 @@ val preferencesModule = module {
 val networkModule = module {
     single {
         OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-            .connectTimeout(120, TimeUnit.SECONDS)
+            .addInterceptor(
+                if (BuildConfig.DEBUG) HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+                else HttpLoggingInterceptor().setLevel(
+                    HttpLoggingInterceptor.Level.NONE
+                )
+            ).connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
             .build()
     }
