@@ -109,7 +109,7 @@ fun AboutContent(
                 .padding(innerPadding)
         ) {
             SubcomposeAsyncImage(
-                model = Constants.gitubAvatar,
+                model = Constants.githubAvatar,
                 contentDescription = Constants.githubUsername,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier

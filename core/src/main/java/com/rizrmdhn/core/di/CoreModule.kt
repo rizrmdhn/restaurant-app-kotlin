@@ -2,6 +2,7 @@ package com.rizrmdhn.core.di
 
 import androidx.room.Room
 import com.rizrmdhn.core.BuildConfig
+import com.rizrmdhn.core.common.Constants
 import com.rizrmdhn.core.data.RestaurantRepository
 import com.rizrmdhn.core.data.source.local.LocalDataSource
 import com.rizrmdhn.core.data.source.local.preferences.SettingPreferences
@@ -11,6 +12,8 @@ import com.rizrmdhn.core.data.source.remote.RemoteDataSource
 import com.rizrmdhn.core.data.source.remote.network.ApiService
 import com.rizrmdhn.core.domain.repository.IRestaurantRepository
 import com.rizrmdhn.core.utils.AppExecutors
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -22,10 +25,14 @@ import java.util.concurrent.TimeUnit
 val databaseModule = module {
     factory { get<RestaurantDatabase>().restaurantDao() }
     single {
+        val passphrase: ByteArray = SQLiteDatabase.getBytes(Constants.appName.toCharArray())
+        val factory = SupportFactory(passphrase)
         Room.databaseBuilder(
             androidContext(),
             RestaurantDatabase::class.java, "FavoriteRestaurant.db"
-        ).fallbackToDestructiveMigration().build()
+        ).fallbackToDestructiveMigration()
+            .openHelperFactory(factory)
+            .build()
     }
 }
 
