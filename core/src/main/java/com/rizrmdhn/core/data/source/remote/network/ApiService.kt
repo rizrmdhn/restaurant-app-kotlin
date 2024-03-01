@@ -1,6 +1,5 @@
 package com.rizrmdhn.core.data.source.remote.network
 
-import com.rizrmdhn.core.data.source.remote.response.GithubDetailUser
 import com.rizrmdhn.core.data.source.remote.response.RestaurantDetailResponse
 import com.rizrmdhn.core.data.source.remote.response.RestaurantListResponse
 import com.rizrmdhn.core.data.source.remote.response.RestaurantSearchResponse

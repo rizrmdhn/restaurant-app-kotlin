@@ -12,16 +12,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.rizrmdhn.core.data.Resource
 import com.rizrmdhn.core.domain.model.Restaurant
 import com.rizrmdhn.core.ui.favorite.FavoriteScreenViewModel
 import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCard
+import com.rizrmdhn.restaurantappclean.ui.components.RestaurantCardLoader
 import com.rizrmdhn.restaurantappclean.ui.components.TopBar
+import com.rizrmdhn.restaurantappclean.ui.navigation.Screen
 import com.rizrmdhn.restaurantappclean.ui.theme.RestaurantAppCleanTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -33,145 +39,144 @@ fun FavoriteScreen(
     isInDarkMode: Boolean,
     onToggleDarkMode: () -> Unit,
 ) {
-    Text(text = "Favorite Screen")
-//    val navBackStackEntry by navController.currentBackStackEntryAsState()
-//    val currentRoute = navBackStackEntry?.destination?.route
-//
-//    val isSearchOpen by viewModel.isSearchOpen.collectAsState()
-//    val query by viewModel.query.collectAsState()
-//
-//    // Navigation Function
-//    val navigateToHome = {
-//        navController.navigate(Screen.Home.route)
-//    }
-//
-//    val navigateToFavorite = {
-//        navController.navigate(Screen.Favorite.route)
-//    }
-//
-//    val navigateToAbout = {
-//        navController.navigate(Screen.About.route)
-//    }
-//
-//    // Function
-//    val onToggleSearch = {
-//        viewModel.setSearchOpen(!isSearchOpen)
-//    }
-//
-//    val onQueryChange = { newQuery: String ->
-//        viewModel.onQueryChange(newQuery)
-//    }
-//
-//    fun onSearch() {
-//        viewModel.onSearch()
-//    }
-//
-//
-//    val onClearQuery = {
-//        viewModel.clearQuery()
-//    }
-//
-//
-//    viewModel.state.collectAsState(initial = Resource.Loading()).value.let { result ->
-//        when (result) {
-//            is Resource.Loading -> {
-//                viewModel.getFavoriteRestaurants()
-//
-//                Scaffold(topBar = {
-//                    TopBar(
-//                        onOpenSearch = onToggleSearch,
-//                        onGoToHome = navigateToHome,
-//                        onGoToFavorite = navigateToFavorite,
-//                        onGoToAbout = navigateToAbout,
-//                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
-//                        isInDarkMode = isInDarkMode,
-//                        onToggleDarkMode = onToggleDarkMode,
-//                        isSearchOpen = isSearchOpen,
-//                        query = query,
-//                        searchPlaceHolder = "Cari restaurant...",
-//                        onQueryChange = onQueryChange,
-//                        onSearch = {
-//                        },
-//                        active = false,
-//                        onActiveChange = {},
-//                        onClearQuery = onClearQuery
-//                    )
-//                }) { innerPadding ->
-//                    LazyColumn(
-//                        modifier = Modifier.padding(innerPadding),
-//                    ) {
-//                        items(10) {
-//                            RestaurantCardLoader()
-//                        }
-//                    }
-//                }
-//            }
-//
-//            is Resource.Success -> {
-//                result.data?.let {
-//                    FavoriteScreenContent(restaurant = it,
-//                        navigateToDetail = { id ->
-//                            navController.navigate(
-//                                Screen.DetailRestaurant.createRoute(id)
-//                            )
-//                        },
-//                        onOpenSearch = onToggleSearch,
-//                        onGoToHome = navigateToHome,
-//                        onGoToFavorite = navigateToFavorite,
-//                        onGoToAbout = navigateToAbout,
-//                        isInFavoriteScreen = true,
-//                        isInDarkMode = isInDarkMode,
-//                        onToggleDarkMode = onToggleDarkMode,
-//                        isSearchOpen = isSearchOpen,
-//                        query = query,
-//                        onQueryChange = onQueryChange,
-//                        onSearch = {
-//                            onSearch()
-//                        },
-//                        active = false,
-//                        onActiveChange = {},
-//                        onClearQuery = onClearQuery
-//                    )
-//                }
-//            }
-//
-//            is Resource.Error -> {
-//                Scaffold(topBar = {
-//                    TopBar(
-//                        onOpenSearch = onToggleSearch,
-//                        onGoToHome = navigateToHome,
-//                        onGoToFavorite = navigateToFavorite,
-//                        onGoToAbout = navigateToAbout,
-//                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
-//                        isInDarkMode = isInDarkMode,
-//                        onToggleDarkMode = onToggleDarkMode,
-//                        isSearchOpen = isSearchOpen,
-//                        query = query,
-//                        searchPlaceHolder = "Cari restaurant...",
-//                        onQueryChange = onQueryChange,
-//                        onSearch = {},
-//                        active = false,
-//                        onActiveChange = {},
-//                        onClearQuery = onClearQuery
-//                    )
-//                }) { innerPadding ->
-//                    Column(
-//                        modifier = Modifier
-//                            .fillMaxSize()
-//                            .padding(innerPadding),
-//                        horizontalAlignment = Alignment.CenterHorizontally,
-//                        verticalArrangement = Arrangement.Center
-//                    ) {
-//                        Text(
-//                            text = "Terjadi kesalahan saat mengambil data: ${result.message}",
-//                            style = MaterialTheme.typography.bodyMedium,
-//                            textAlign = TextAlign.Center
-//                        )
-//                    }
-//                }
-//            }
-//        }
-//    }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val isSearchOpen by viewModel.isSearchOpen.collectAsState()
+    val query by viewModel.query.collectAsState()
+
+    // Navigation Function
+    val navigateToHome = {
+        navController.navigate(Screen.Home.route)
+    }
+
+    val navigateToFavorite = {
+        navController.navigate(Screen.Favorite.route)
+    }
+
+    val navigateToAbout = {
+        navController.navigate(Screen.About.route)
+    }
+
+    // Function
+    val onToggleSearch = {
+        viewModel.setSearchOpen(!isSearchOpen)
+    }
+
+    val onQueryChange = { newQuery: String ->
+        viewModel.onQueryChange(newQuery)
+    }
+
+    fun onSearch() {
+        viewModel.onSearch()
+    }
+
+
+    val onClearQuery = {
+        viewModel.clearQuery()
+    }
+
+
+    viewModel.state.collectAsState(initial = Resource.Loading()).value.let { result ->
+        when (result) {
+            is Resource.Loading -> {
+                viewModel.getFavoriteRestaurants()
+
+                Scaffold(topBar = {
+                    TopBar(
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
+                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
+                        isInDarkMode = isInDarkMode,
+                        onToggleDarkMode = onToggleDarkMode,
+                        isSearchOpen = isSearchOpen,
+                        query = query,
+                        searchPlaceHolder = "Cari restaurant...",
+                        onQueryChange = onQueryChange,
+                        onSearch = {
+                        },
+                        active = false,
+                        onActiveChange = {},
+                        onClearQuery = onClearQuery
+                    )
+                }) { innerPadding ->
+                    LazyColumn(
+                        modifier = Modifier.padding(innerPadding),
+                    ) {
+                        items(10) {
+                            RestaurantCardLoader()
+                        }
+                    }
+                }
+            }
+
+            is Resource.Success -> {
+                result.data?.let {
+                    FavoriteScreenContent(restaurant = it,
+                        navigateToDetail = { id ->
+                            navController.navigate(
+                                Screen.DetailRestaurant.createRoute(id)
+                            )
+                        },
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
+                        isInFavoriteScreen = true,
+                        isInDarkMode = isInDarkMode,
+                        onToggleDarkMode = onToggleDarkMode,
+                        isSearchOpen = isSearchOpen,
+                        query = query,
+                        onQueryChange = onQueryChange,
+                        onSearch = {
+                            onSearch()
+                        },
+                        active = false,
+                        onActiveChange = {},
+                        onClearQuery = onClearQuery
+                    )
+                }
+            }
+
+            is Resource.Error -> {
+                Scaffold(topBar = {
+                    TopBar(
+                        onOpenSearch = onToggleSearch,
+                        onGoToHome = navigateToHome,
+                        onGoToFavorite = navigateToFavorite,
+                        onGoToAbout = navigateToAbout,
+                        isInFavoriteScreen = currentRoute == Screen.Favorite.route,
+                        isInDarkMode = isInDarkMode,
+                        onToggleDarkMode = onToggleDarkMode,
+                        isSearchOpen = isSearchOpen,
+                        query = query,
+                        searchPlaceHolder = "Cari restaurant...",
+                        onQueryChange = onQueryChange,
+                        onSearch = {},
+                        active = false,
+                        onActiveChange = {},
+                        onClearQuery = onClearQuery
+                    )
+                }) { innerPadding ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = "Terjadi kesalahan saat mengambil data: ${result.message}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 
