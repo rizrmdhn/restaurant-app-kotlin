@@ -22,6 +22,7 @@ android {
         targetSdk = 34
 
         buildConfigField("String", "BASE_URL", "\"https://restaurant-api.dicoding.dev\"")
+        buildConfigField("String", "BASE_URL_HOSTNAME", "\"restaurant-api.dicoding.dev\"")
         buildConfigField("String", "BASE_URL_GITHUB", "\"https://api.github.com\"")
         buildConfigField("Boolean", "DEBUG", "$debug")
 
@@ -35,6 +36,13 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

@@ -1,6 +1,5 @@
 package com.rizrmdhn.core.data
 
-import android.util.Log
 import com.rizrmdhn.core.data.source.remote.network.ApiResponse
 import kotlinx.coroutines.flow.*
 
@@ -9,7 +8,6 @@ abstract class NetworkBoundResource<ResultType, RequestType> {
     private var result: Flow<Resource<ResultType>> = flow {
         emit(Resource.Loading())
         val dbSource = loadFromDB().first()
-        Log.d("NetworkBoundResource", "dbSource: $dbSource")
         if (shouldFetch(dbSource)) {
             emit(Resource.Loading())
             when (val apiResponse = createCall().first()) {

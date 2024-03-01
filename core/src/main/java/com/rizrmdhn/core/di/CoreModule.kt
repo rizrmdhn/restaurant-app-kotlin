@@ -14,6 +14,7 @@ import com.rizrmdhn.core.domain.repository.IRestaurantRepository
 import com.rizrmdhn.core.utils.AppExecutors
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
+import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -47,6 +48,10 @@ val preferencesModule = module {
 
 val networkModule = module {
     single {
+        val certificatePinner = CertificatePinner.Builder()
+            .add(BuildConfig.BASE_URL_HOSTNAME, "sha256/qRXOtBLL57LL0c7e8w/vou6FL8GMrasDduMdcQqXeBw=")
+            .add(BuildConfig.BASE_URL_HOSTNAME, "sha256/jQJTbIh0grw0/1TkHSumWb+Fs0Ggogr621gT3PvPKG0=")
+            .build()
         OkHttpClient.Builder()
             .addInterceptor(
                 if (BuildConfig.DEBUG) HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -55,6 +60,7 @@ val networkModule = module {
                 )
             ).connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
+            .certificatePinner(certificatePinner)
             .build()
     }
     single {

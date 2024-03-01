@@ -47,7 +47,7 @@ object DynamicFeatureUtils {
                 dfClass,
                 methodName
             )
-            Log.d("DynamicFeatureUtils", "viewModel: $viewModel")
+            Log.d("method", "method: $method")
             if (method != null) {
                 val isMethodInvoked =
                     invokeMethod(
