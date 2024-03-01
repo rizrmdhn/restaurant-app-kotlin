@@ -92,4 +92,7 @@ dependencies {
     // Security
     implementation("net.zetetic:android-database-sqlcipher:4.4.0")
     implementation("androidx.sqlite:sqlite-ktx:2.4.0")
+
+    // performance
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.13")
 }
